@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "Github Based Blog Relaunched"
+title:  "Github based blog relaunched"
 date:   2020-01-20 01:36:39 -0500
-categories: jekyll update
+categories: jekyll github
 ---
 I've been missing my old Wordpress programming blog, but I no longer have a dedicated server with which to run Wordpress on. Obviously you can set up a free blog but I've been wondering if something like Github could do static site hosting.
 
@@ -12,8 +12,6 @@ This post is the result of setting up Git, [Jekyll][jekyll-home], Ruby, and Bund
 My interest was initially piqued by this [TeamTreeHouse][teamtreehouse] post talking about hosting a site on on Github with your own domain. Then I was thoroughly convinced by a detailed write-up: [Goodbye WordPress. Hello, Jekyll!][stealthpuppy] by someone in the exact same self-hosted boat I was in.
 
 The [GitHub Pages Help][jekyll-help] has more info on how to get [Jekyll][jekyll-home] working with GitHub.
-
-I've also brought over all my old Wordpress blog posts. There are plugins that can export Wordpress data, but since I am repopulating my blog from a backup file, I did it by hand, as described in [Migrating Wordpress to GitHub][migrating-wordpress]. 
 
 Local Webserver
 ===
