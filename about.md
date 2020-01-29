@@ -4,12 +4,14 @@ title: about dkrue
 permalink: /about/
 ---
 
-Code is what takes us from idea to execution. I love finding creative solutions to real-life problems using technology. I hope the resources on this site help other software developers like me create solutions like I do.
+_dkrue code_ is the blog of Dan Krueger.
+
+Code is what takes us from idea to execution. I love finding creative solutions to real-life problems using technology. I hope the resources on this site help other software developers and code enthusiasts.
 
 Software
 ===
-[Github: github.com/dkrue](https://github.com/dkrue)
+[Github | _github.com/dkrue_](https://github.com/dkrue)
 
 Hardware
 ===
-You can find my handcrafted hardware running some of the code featured on this site in my [Etsy store: CircuitsAndSawdust](https://www.etsy.com/shop/CircuitsAndSawdust)
+[Etsy Store | _CircuitsAndSawdust_](https://www.etsy.com/shop/CircuitsAndSawdust)
