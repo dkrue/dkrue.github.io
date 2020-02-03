@@ -1,0 +1,174 @@
+---
+layout: default
+---
+
+<link rel='stylesheet' href='http://kendo.cdn.telerik.com/2019.3.917/styles/kendo.common.min.css'/>
+<link rel='stylesheet' href='http://kendo.cdn.telerik.com/2019.3.917/styles/kendo.default.min.css'/>
+<link rel='stylesheet' href='http://kendo.cdn.telerik.com/2019.3.917/styles/kendo.default.mobile.min.css'/>
+
+<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
+<script src='http://kendo.cdn.telerik.com/2019.3.917/js/kendo.ui.core.min.js'></script>
+
+<style>
+  video, canvas {
+  border: 1px solid black;
+  background: black;
+  height: 270px;
+  width: 480px;
+}
+#photo_overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  background-color:rgba(0,0,0,0);
+}
+</style>
+
+
+<div style="position:relative;display:inline-block;width:70%;">
+    <video autoplay></video>
+    <canvas id="photo_overlay"></canvas>
+</div>
+<div style="position:relative;display:inline-block;width:20%;vertical-align:top;">
+    <label>Zoom</label>
+    <input id="camera_zoom" value="1"/>
+</div>
+<div>
+    <canvas id="photo_main"></canvas>
+</div>
+<div>
+    <button type="button" id="photo_main_button" onclick="photo_click('photo_main')" disabled>Take Photo</button>
+</div>
+
+
+<script>
+var imageCapture;
+var videoTrack;  
+
+const vgaConstraints = {
+    video: { width: { exact: 640 }, height: { exact: 480 } }
+};
+
+const hdConstraints = {
+    video: { width: { exact: 1280 }, height: { exact: 720 } }
+};
+
+const fullHdConstraints = {
+    video: { width: { exact: 1920 }, height: { exact: 1080 } }
+};
+
+$(document).ready(function() {
+    $("#camera_zoom").kendoSlider({
+        orientation: "vertical",
+        min: 1,
+        max: 6,
+        smallStep: 0.5,
+        largeStep: 1,
+        showButtons: true,
+        change: photo_zoom_change
+    });
+
+    // Initialize camera - this will ask the user if they want to allow it the first time this is run
+    navigator.mediaDevices.getUserMedia(fullHdConstraints)
+        .then(photo_camera_initialized)
+        .catch(error => {
+            if (error.name == "OverconstrainedError") {
+                console.log("Camera does not support 1080 Full HD. Attempting lower resolution.")
+            } else {
+                console.error(error);
+            }
+
+            navigator.mediaDevices.getUserMedia(hdConstraints)
+                .then(photo_camera_initialized)
+                .catch(error => {
+                    if (error.name == "OverconstrainedError") {
+                        console.log("Camera does not support 720 HD. Attempting lower resolution.")
+                    } else {
+                        console.error(error);
+                    }
+
+                    navigator.mediaDevices.getUserMedia(vgaConstraints) 
+                        .then(photo_camera_initialized)
+                        .catch(error => {
+                            console.error(error);
+                        });
+                });
+        });
+
+    var canvas = document.querySelector("#photo_main");
+    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+});
+
+function photo_camera_initialized(mediaStream) {
+    document.querySelector('video').srcObject = mediaStream;
+
+    videoTrack = mediaStream.getVideoTracks()[0];
+
+    var constraints = videoTrack.getConstraints();
+    console.log('Video constraints: ' + JSON.stringify(constraints));
+
+    // Decrease zoom capability for cameras with lower resolution
+    if (constraints.height.exact <= 480) {
+        $("#camera_zoom").data("kendoSlider").max(3);
+    } else if (constraints.height.exact <= 720) {
+        $("#camera_zoom").data("kendoSlider").max(4);
+    }
+
+    if ($("#camera_zoom").data("kendoSlider").value() > $("#camera_zoom").data("kendoSlider").max()) {
+        $("#camera_zoom").data("kendoSlider").value($("#camera_zoom").data("kendoSlider").max());
+    }
+
+    imageCapture = new ImageCapture(videoTrack);
+}
+
+function photo_click(canvasId) {
+    imageCapture.takePhoto()
+        .then(blob => createImageBitmap(blob))
+        .then(imageBitmap => {
+
+            const canvas = document.querySelector("#" + canvasId);
+            photo_drawcanvas(canvas, imageBitmap);
+        })
+        .catch(error => console.error(error));
+}
+
+function photo_drawcanvas(canvas, img) {
+    // set canvas size equal to camera size to keep full quality of image behind the scenes
+    // css will style the canvas element to appear smaller in the browser
+    canvas.width = img.width;
+    canvas.height = img.height;
+    var aspectRatio = canvas.width / canvas.height;
+
+    // variable width photo preview to match camera aspect ratio
+    var previewHeight = parseInt($(canvas).css("height"), 10);
+    $(canvas).css("width", Math.floor(previewHeight * aspectRatio));
+
+    // draw zoomed image: starting at position, clip size, draw at, draw at clip size
+    var zoom = $("#camera_zoom").data("kendoSlider").value() - 1;
+    canvas.getContext('2d').drawImage(img, zoom * 60 * aspectRatio, zoom * 60, img.width, img.height, 0, 0, img.width + (zoom * 100 * aspectRatio * 2), img.height + (zoom * 100 * 2));
+
+    // clear sides to preview how the image will look when cropped square
+    canvas.getContext('2d').clearRect(0, 0, (canvas.width - canvas.height) / 4, canvas.height);
+    canvas.getContext('2d').clearRect(canvas.width - (canvas.width - canvas.height) / 4, 0, canvas.width, canvas.height);
+}
+
+function photo_zoom_change(e) {
+    var canvas = document.getElementById("photo_overlay");
+    canvas.width = document.querySelector('video').videoWidth;
+    canvas.height = document.querySelector('video').videoHeight;
+    var aspectRatio = canvas.width / canvas.height;
+
+    var ctx = canvas.getContext("2d");
+    ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var zoom = $("#camera_zoom").data("kendoSlider").value() - 1;
+    ctx.clearRect(zoom * 60 * aspectRatio, zoom * 20, canvas.width - (zoom * 120 * aspectRatio), canvas.height - (zoom * 60));
+}
+
+document.querySelector('video').addEventListener('play', function () {
+  document.getElementById("photo_main_button").removeAttribute("disabled");
+});
+</script>
