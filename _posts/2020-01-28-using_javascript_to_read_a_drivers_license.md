@@ -71,7 +71,18 @@ function magstripeIdReaderParseData() {
 }
 {% endhighlight %}
 
-### Remarks
-Some states such as Michigan, where I'm located, only use track 2 and do not encode any name or address information on the magstripe. Notice the special code when parsing the data for Michigan to convert the numeric overflow field data to an alpha character. 
+### Parsing the data
 
-Note that the card data starts with the start sentinel character `;` and the end sentinel character is `?`. Variable length data fields are separated by the `=` character. To make sense of all the `substr()` string parsing, you'll need to consult the AAMVA design standards to see how the data is laid out on the mapstripe.
+Some states such as Michigan, where I’m located, only use track 2 and do not encode any name or address information on the magstripe. When you swipe the card, the raw data looks something like this fake data:
+
+`;636032626035300300=210519650501=11=?`
+
+Whoa! Let's break down the raw data piece by piece.
+
+| ; | 636032 | 626035300300 | = | 2105 | 19650501 | = | 11 | = | ? |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| start sentinel | state ISO IIN | license number | separator | expiration | birthdate | separator | overflow | separator | end sentinel |
+| | _6 char_ | _variable length, up to 13 char_ | | _4 char: YYMM_ | _8 char: CCYYMMDD_ | | _variable length, coded prefix letter_ | |
+
+
+When parsing the data for Michigan, the variable length overflow field is used to hold an alpha character prefixed to the license number _(A=1, Z=26)_. You'll want to consult the [AAMVA card design standards](https://www.aamva.org/DL-ID-Card-Design-Standard/) to see how the data can be laid out on the mapstripe for your state!
