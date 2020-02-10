@@ -4,7 +4,7 @@ title: about dkrue
 permalink: /about/
 ---
 
-_dkrue code_ is the blog of Dan Krueger.
+_dkrue code_ is the blog of software developer Dan Krueger.
 
 Code is what takes us from idea to execution. I love finding creative solutions to real-life problems using technology. I hope the resources on this site help other software developers and code enthusiasts.
 
