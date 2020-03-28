@@ -1,0 +1,340 @@
+---
+layout: default
+---
+
+
+<link href="./Content/css/bootstrap.yeti.css" rel="stylesheet" title="main">
+<link href="./Content/css/font-awesome.min.css" rel="stylesheet">
+
+<link href="./Content/css/kendo.common.min.css" rel="stylesheet" id="kendocommon">
+<link href="./Content/css/kendo.silver.min.css" rel="stylesheet" id="kendotheme">
+<link href="./Content/css/site.css" rel="stylesheet" id="sitemain">
+
+<script src="./scripts/externaljs.js"></script>
+<script src="./scripts/meeting_minutes_global_min.js"></script>
+
+<style>
+/* Important css pulled from site.css */
+
+/* Increase space between a section that is a grid and whatever is above it */
+.k-grid-separator-top {
+    margin-top: 10px;
+}
+
+/* Fix odd spacing on datepicker in this version */
+.k-datetimepicker {
+    padding-top:0px;
+    padding-bottom:0px;
+}
+
+/* This is used for titles above sections, like grids */
+.label-section {
+    text-transform: capitalize !important;
+    font-family: sans-serif !important;
+    -ms-text-size-adjust: 100% !important;
+    -webkit-text-size-adjust: 100% !important;
+    font-size: 16px !important;
+    font-weight: normal !important;
+}
+
+/* Makes all Telerik controls fill the column space they are in */
+.k-autocomplete, .k-combobox, .k-datepicker, .k-timepicker, .k-datetimepicker, .k-colorpicker, .k-numerictextbox, .k-dropdown, .k-selectbox, .k-textbox, .k-toolbar .k-split-button {
+    width: 100%;
+}
+
+/* Keep grid selection background color without hover due to jekyll blog grid styling */
+table tr:nth-child(even).k-state-selected {
+    background-color: #1186d0; }
+</style>
+
+
+
+
+<div class="panel panel-default panel-widget">
+    <div class="col-xs-12 panel-heading">
+        <div class="col-xs-12 col-fix-left panel-title">
+                <label class="k.label label-section">Demo</label>
+        </div>
+    </div>
+    <div class="panel-body" style="padding: 5px">
+        <div class="col-xs-12">
+            <button style="margin-top:10px;margin-bottom:10px;" class="btn btn-success" title="Add Meeting Minutes" id="dashboardactions_meetingminutes_button" onclick="meetingMinutesModalShow()">Start Meeting Minutes</button>
+        </div>
+        <p>
+            Here's an example of a web app I've created for a client. 
+            The goal was to allow easy user entry of meeting minutes using a template.
+            Each team can have their own meeting agenda templates.
+        </p>
+    </div>
+</div>
+<div class="panel panel-default panel-widget" style="margin-top: 10px;">
+    <div class="col-xs-12 panel-heading">
+        <div class="col-xs-12 col-fix-left panel-title">
+            <label class="k.label label-section">How to use</label>
+        </div>
+    </div>
+    <div class="panel-body" style="padding: 5px">
+        <ol>
+            <li><em>Click Start Meeting Minutes</em> - A new meeting will be ready for <em>Team One</em></li>
+            <li>To add participants and minutes to the grids, click the green <strong>[+]</strong></li>
+            <li>You can also hit the <em>TAB</em> key to add more rows</li>
+            <li>Everything is auto-saved to your browser's memory!</li>
+        </ol>
+    </div>
+</div>    
+<div class="panel panel-default panel-widget" style="margin-top: 10px;">
+    <div class="col-xs-12 panel-heading">
+        <div class="col-xs-12 col-fix-left panel-title">
+            <label class="k.label label-section">Features</label>
+        </div>
+    </div>
+    <div class="panel-body" style="padding: 5px">
+        <ul>
+            <li>To add a totally new agenda item, click the gray <strong>[+]</strong> at the bottom</li>
+            <li>New agenda items can be added to every future meeting by checking <em>"Add to Template"</em></li>
+            <li>Click <em>"Create Action"</em> on any meeting minutes to send an email for it</li>
+            <li>Click the clock button to view all previous meetings recorded for the selected team</li>
+            <li>Each meeting template can have multiple agenda categories</li>
+        </ul>
+    </div>
+</div>      
+<div class="panel panel-default panel-widget" style="margin-top: 10px;">
+    <div class="col-xs-12 panel-heading">
+        <div class="col-xs-12 col-fix-left panel-title">
+            <label class="k.label label-section">Technology</label>
+        </div>
+    </div>
+    <div class="panel-body" style="padding: 5px">
+        <ul>
+            <li>Made using HTML5, Kendo UI, jQuery, and Bootstrap</li>
+            <li>Saves records via ajax to a RESTful API / database</li>
+            <li>Uses IndexedDB for local data storage for offline usage / demo mode</li>
+        </ul>
+    </div>
+</div>      
+
+
+
+<script src="./scripts/meeting_minutes.js"></script>
+
+
+<div class="modal fade" id="meeting_minutes_modal" role="dialog" aria-labelledby="meeting_minutes_modal">
+    <div class="modal-dialog modal-large" style="width:95%" role="document">
+        <div class="modal-content">
+            <div class="modal-header alert-info">
+                <button type="button" class="close" aria-label="Close" onclick="meeting_minutes_close_modal()"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Meeting Minutes Demo</h4>
+            </div>
+            <div class="modal-body text-primary">
+                <div class="row col-fix-right-large">
+                    <div class="col-xs-12 col-fix-left k-grid-separator col-fix-right-clear" id="meeting_minutes_history_collapse" style="display:none;margin-bottom:10px;">
+                        <div id="meeting_minutes_history_grid">
+                            
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="col-xs-12 panel-heading">
+                            <div class="btn-group col-xs-12 col-md-9" id="meeting_minutes_tab_button_group">
+                                <button type="button" class="btn btn-primary default-focus-ignore" id="meeting_minutes_tab_button_intro" value="intro">Introductory Items</button>
+                                <button type="button" class="btn btn-primary default-focus-ignore" id="meeting_minutes_tab_button_other" value="other">Other</button>
+                                <span style="color: red; font-weight: bold; margin-left: 50px; display:none;" id="meeting_minutes_historical_label">HISTORICAL MEETING MINUTES</span>
+                            </div>
+                            <div class="col-xs-12 col-md-3 col-last">
+                                <div class="pull-right">
+                                    <button type="button" class="btn btn-default default-focus-ignore" id="meeting_minutes_previous_button" title="Load previous meeting" onclick="meeting_minutes_load_previous()" disabled=""><i class="fa fa-arrow-left fa-lg"></i></button>
+                                    <button type="button" class="btn btn-default btn-space default-focus-ignore" id="meeting_minutes_history_button" title="Show historical meetings" onclick="meeting_minutes_historical_toggle()" disabled=""><i class="fa fa-clock-o fa-lg"></i></button>
+                                    <button type="button" class="btn btn-primary default-focus-ignore" id="meeting_minutes_new_meeting_button" title="Clear and start new meeting" onclick="meeting_minutes_reset_modal()"><i class="fa fa-remove fa-lg"></i></button>
+                                    <button type="button" class="btn btn-default default-focus-ignore" id="meeting_minutes_print_button" onclick="meeting_minutes_print()" disabled=""><i class="fa fa-print fa-lg"></i></button>
+                                    <button type="button" class="btn btn-default default-focus-ignore" id="meeting_minutes_save_button" onclick="meeting_minutes_save_all()" disabled=""><i class="fa fa-save fa-lg"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body" id="meeting_minutes_intro_panel">
+                            <div class="col-xs-12 col-md-6 col-lg-3">
+                                <label class="k.label label-top-sm">Team</label>
+                                <div class="row">
+                                    <div class="col-xs-12 col-fix-left">
+                                        <span class="k-widget k-combobox k-header k-combobox-clearable" style=""><span tabindex="-1" unselectable="on" class="k-dropdown-wrap k-state-default"><input name="meeting_minutes_program_team_input" class="k-input" type="text" autocomplete="off" title="" role="combobox" aria-expanded="false" style="width: 100%;" tabindex="0" aria-disabled="false" aria-autocomplete="list" aria-owns="meeting_minutes_program_team_listbox" aria-busy="false"><span unselectable="on" class="k-icon k-clear-value k-i-close k-hidden" title="clear" role="button" tabindex="-1"></span><span unselectable="on" class="k-select" aria-label="select" role="button" tabindex="-1" aria-controls="meeting_minutes_program_team_listbox"><span class="k-icon k-i-arrow-60-down"></span></span></span><input data-required-msg="Program is required" id="meeting_minutes_program_team" name="meeting_minutes_program_team" required="required" type="text" data-role="combobox" style="display: none;" aria-disabled="false"></span><script>
+	kendo.syncReady(function(){jQuery("#meeting_minutes_program_team").kendoComboBox({"change":meeting_minutes_program_team_change,"dataTextField":"Text","dataValueField":"Value"});});
+</script>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6 col-lg-3">
+                                <label class="k.label label-top-sm">Template</label>
+                                <div class="row">
+                                    <div class="col-xs-12 col-fix-left">
+                                        <span class="k-widget k-combobox k-header k-combobox-clearable" style=""><span tabindex="-1" unselectable="on" class="k-dropdown-wrap k-state-default"><input name="meeting_minutes_template_input" class="k-input" type="text" autocomplete="off" title="" role="combobox" aria-expanded="false" style="width: 100%;" tabindex="0" aria-disabled="false" aria-autocomplete="list" aria-owns="meeting_minutes_template_listbox" aria-busy="false"><span unselectable="on" class="k-icon k-clear-value k-i-close k-hidden" title="clear" role="button" tabindex="-1"></span><span unselectable="on" class="k-select" aria-label="select" role="button" tabindex="-1" aria-controls="meeting_minutes_template_listbox"><span class="k-icon k-i-arrow-60-down"></span></span></span><input data-required-msg="Template is required" id="meeting_minutes_template" name="meeting_minutes_template" required="required" type="text" data-role="combobox" style="display: none;" aria-disabled="false"></span><script>
+	kendo.syncReady(function(){jQuery("#meeting_minutes_template").kendoComboBox({"change":meeting_minutes_program_template_change,"dataTextField":"Text","dataValueField":"Value"});});
+</script>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6 col-lg-3">
+                                <label class="k.label label-top-sm">Meeting Date/Time</label>
+                                <div class="row">
+                                    <div class="col-xs-12 col-fix-left">
+                                        <span class="k-widget k-datetimepicker k-header" style=""><span class="k-picker-wrap k-state-default"><input data-required-msg="Meeting Date is required" id="meeting_minutes_date" name="meeting_minutes_date" required="required" type="text" data-role="datetimepicker" class="k-input" role="combobox" aria-expanded="false" aria-disabled="false" style="width: 100%;"><span unselectable="on" class="k-select"><span class="k-link k-link-date" aria-label="Open the date view"><span unselectable="on" class="k-icon k-i-calendar" aria-controls="meeting_minutes_date_dateview"></span></span><span class="k-link k-link-time" aria-label="Open the time view"><span unselectable="on" class="k-icon k-i-clock" aria-controls="meeting_minutes_date_timeview"></span></span></span></span></span><script>
+	kendo.syncReady(function(){jQuery("#meeting_minutes_date").kendoDateTimePicker({"close":meeting_minutes_datepicker_close,"format":"M/d/yyyy h:mm tt","parseFormats":["MMddyyyy hhmmt","MMddyyyy hhmm t","MMddyyyy HHmm","MMddyyyy hh:mmt","MMddyyyy hh:mm t","MMddyyyy HH:mm","MMddyyyy hht","MMddyyyy hh t","MMddyyyy HH","MMddyyyyhhmmt","MMddyyyyhhmm t","MMddyyyyhh:mmt","MMddyyyyhh:mm t","MMddyyyyHH:mm","MMddyyyyhht","MMddyyyyhh t","MMddyy hhmmt","MMddyy hhmm t","MMddyy HHmm","MMddyy hh:mmt","MMddyy hh:mm t","MMddyy HH:mm","MMddyy hht","MMddyy hh t","MMddyy HH","MMddyyhhmmt","MMddyyhhmm t","MMddyyhh:mmt","MMddyyhh:mm t","MMddyyHH:mm","MMddyyhht","MMddyyhh t","M/dd/yyyy hhmmt","M/dd/yyyy hhmm t","M/dd/yyyy HHmm","M/dd/yyyy hh:mmt","M/dd/yyyy hh:mm t","M/dd/yyyy HH:mm","M/dd/yyyy hht","M/dd/yyyy hh t","M/dd/yyyy HH","M/dd/yyyyhhmmt","M/dd/yyyyhhmm t","M/dd/yyyyhh:mmt","M/dd/yyyyhh:mm t","M/dd/yyyyHH:mm","M/dd/yyyyhht","M/dd/yyyyhh t","MM/d/yyyy hhmmt","MM/d/yyyy hhmm t","MM/d/yyyy HHmm","MM/d/yyyy hh:mmt","MM/d/yyyy hh:mm t","MM/d/yyyy HH:mm","MM/d/yyyy hht","MM/d/yyyy hh t","MM/d/yyyy HH","MM/d/yyyyhhmmt","MM/d/yyyyhhmm t","MM/d/yyyyhh:mmt","MM/d/yyyyhh:mm t","MM/d/yyyyHH:mm","MM/d/yyyyhht","MM/d/yyyyhh t","M/d/yyyy hhmmt","M/d/yyyy hhmm t","M/d/yyyy HHmm","M/d/yyyy hh:mmt","M/d/yyyy hh:mm t","M/d/yyyy HH:mm","M/d/yyyy hht","M/d/yyyy hh t","M/d/yyyy HH","M/d/yyyyhhmmt","M/d/yyyyhhmm t","M/d/yyyyhh:mmt","M/d/yyyyhh:mm t","M/d/yyyyHH:mm","M/d/yyyyhht","M/d/yyyyhh t","MM/dd/yy hhmmt","MM/dd/yy hhmm t","MM/dd/yy HHmm","MM/dd/yy hh:mmt","MM/dd/yy hh:mm t","MM/dd/yy HH:mm","MM/dd/yy hht","MM/dd/yy hh t","MM/dd/yy HH","MM/dd/yyhhmmt","MM/dd/yyhhmm t","MM/dd/yyhh:mmt","MM/dd/yyhh:mm t","MM/dd/yyHH:mm","MM/dd/yyhht","MM/dd/yyhh t","M/dd/yy hhmmt","M/dd/yy hhmm t","M/dd/yy HHmm","M/dd/yy hh:mmt","M/dd/yy hh:mm t","M/dd/yy HH:mm","M/dd/yy hht","M/dd/yy hh t","M/dd/yy HH","M/dd/yyhhmmt","M/dd/yyhhmm t","M/dd/yyhh:mmt","M/dd/yyhh:mm t","M/dd/yyHH:mm","M/dd/yyhht","M/dd/yyhh t","MM/d/yy hhmmt","MM/d/yy hhmm t","MM/d/yy HHmm","MM/d/yy hh:mmt","MM/d/yy hh:mm t","MM/d/yy HH:mm","MM/d/yy hht","MM/d/yy hh t","MM/d/yy HH","MM/d/yyhhmmt","MM/d/yyhhmm t","MM/d/yyhh:mmt","MM/d/yyhh:mm t","MM/d/yyHH:mm","MM/d/yyhht","MM/d/yyhh t","M/d/yy hhmmt","M/d/yy hhmm t","M/d/yy HHmm","M/d/yy hh:mmt","M/d/yy hh:mm t","M/d/yy HH:mm","M/d/yy hht","M/d/yy hh t","M/d/yy HH","M/d/yyhhmmt","M/d/yyhhmm t","M/d/yyhh:mmt","M/d/yyhh:mm t","M/d/yyHH:mm","M/d/yyhht","M/d/yyhh t","M-dd-yyyy hhmmt","M-dd-yyyy hhmm t","M-dd-yyyy HHmm","M-dd-yyyy hh:mmt","M-dd-yyyy hh:mm t","M-dd-yyyy HH:mm","M-dd-yyyy hht","M-dd-yyyy hh t","M-dd-yyyy HH","M-dd-yyyyhhmmt","M-dd-yyyyhhmm t","M-dd-yyyyhh:mmt","M-dd-yyyyhh:mm t","M-dd-yyyyHH:mm","M-dd-yyyyhht","M-dd-yyyyhh t","MM-d-yyyy hhmmt","MM-d-yyyy hhmm t","MM-d-yyyy HHmm","MM-d-yyyy hh:mmt","MM-d-yyyy hh:mm t","MM-d-yyyy HH:mm","MM-d-yyyy hht","MM-d-yyyy hh t","MM-d-yyyy HH","MM-d-yyyyhhmmt","MM-d-yyyyhhmm t","MM-d-yyyyhh:mmt","MM-d-yyyyhh:mm t","MM-d-yyyyHH:mm","MM-d-yyyyhht","MM-d-yyyyhh t","M-d-yyyy hhmmt","M-d-yyyy hhmm t","M-d-yyyy HHmm","M-d-yyyy hh:mmt","M-d-yyyy hh:mm t","M-d-yyyy HH:mm","M-d-yyyy hht","M-d-yyyy hh t","M-d-yyyy HH","M-d-yyyyhhmmt","M-d-yyyyhhmm t","M-d-yyyyhh:mmt","M-d-yyyyhh:mm t","M-d-yyyyHH:mm","M-d-yyyyhht","M-d-yyyyhh t","MM-dd-yy hhmmt","MM-dd-yy hhmm t","MM-dd-yy HHmm","MM-dd-yy hh:mmt","MM-dd-yy hh:mm t","MM-dd-yy HH:mm","MM-dd-yy hht","MM-dd-yy hh t","MM-dd-yy HH","MM-dd-yyhhmmt","MM-dd-yyhhmm t","MM-dd-yyhh:mmt","MM-dd-yyhh:mm t","MM-dd-yyHH:mm","MM-dd-yyhht","MM-dd-yyhh t","M-dd-yy hhmmt","M-dd-yy hhmm t","M-dd-yy HHmm","M-dd-yy hh:mmt","M-dd-yy hh:mm t","M-dd-yy HH:mm","M-dd-yy hht","M-dd-yy hh t","M-dd-yy HH","M-dd-yyhhmmt","M-dd-yyhhmm t","M-dd-yyhh:mmt","M-dd-yyhh:mm t","M-dd-yyHH:mm","M-dd-yyhht","M-dd-yyhh t","MM-d-yy hhmmt","MM-d-yy hhmm t","MM-d-yy HHmm","MM-d-yy hh:mmt","MM-d-yy hh:mm t","MM-d-yy HH:mm","MM-d-yy hht","MM-d-yy hh t","MM-d-yy HH","MM-d-yyhhmmt","MM-d-yyhhmm t","MM-d-yyhh:mmt","MM-d-yyhh:mm t","MM-d-yyHH:mm","MM-d-yyhht","MM-d-yyhh t","M-d-yy hhmmt","M-d-yy hhmm t","M-d-yy HHmm","M-d-yy hh:mmt","M-d-yy hh:mm t","M-d-yy HH:mm","M-d-yy hht","M-d-yy hh t","M-d-yy HH","M-d-yyhhmmt","M-d-yyhhmm t","M-d-yyhh:mmt","M-d-yyhh:mm t","M-d-yyHH:mm","M-d-yyhht","M-d-yyhh t","MMddyyyy","MMddyy","M/dd/yyyy","MM/d/yyyy","M/d/yyyy","MM/dd/yy","M/dd/yy","MM/d/yy","M/d/yy","M-dd-yyyy","MM-d-yyyy","M-d-yyyy","MM-dd-yy","M-dd-yy","MM-d-yy","M-d-yy"],"min":new Date(1900,0,1,0,0,0,0),"max":new Date(2099,11,31,0,0,0,0),"interval":30});});
+</script>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6 col-lg-3">
+                                <label class="k.label label-top-sm">Location</label>
+                                <div class="row">
+                                    <div class="col-xs-12 col-fix-left">
+                                        <input class="k-textbox" id="meeting_minutes_location" name="meeting_minutes_location">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <label class="k.label label-top-sm">Call to Order</label>
+                                <div class="row">
+                                    <div class="col-xs-12 col-fix-left">
+                                        <input class="k-textbox" id="meeting_minutes_calltoorder" name="meeting_minutes_calltoorder">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div class="row">
+                                    <div class="col-xs-12 col-fix-left">
+                                        <div id="meeting_minutes_participants">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-fix-left col-fix-right-clear">
+                        <div id="meeting_minutes_grid">
+                            
+                        </div>
+                    </div>
+                    <div class="col-xs-12" id="meeting_minutes_other_notes" style="display:none">
+                        <label class="k.label label-top-sm">Other Notes</label>
+                        <div class="row">
+                            <div class="col-xs-12 col-fix-left">
+                                <textarea class="k-textbox" cols="20" id="meeting_minutes_other_free_text" name="meeting_minutes_other_free_text" rows="6" style="resize: none; width: 100%"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default k-grid-separator-top" id="meeting_minutes_next_meeting_panel" style="display:none">
+                    <div class="col-xs-12 panel-heading">
+                        <label class="k.label label-section">Next Meeting</label>
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-xs-12 col-md-6 col-lg-3">
+                            <label class="k.label label-top-sm">Next Meeting Date/Time</label>
+                            <div class="row">
+                                <div class="col-xs-12 col-fix-left">
+                                    <span class="k-widget k-datetimepicker k-header" style=""><span class="k-picker-wrap k-state-default"><input id="meeting_minutes_date_next" name="meeting_minutes_date_next" type="text" data-role="datetimepicker" class="k-input" role="combobox" aria-expanded="false" aria-disabled="false" style="width: 100%;"><span unselectable="on" class="k-select"><span class="k-link k-link-date" aria-label="Open the date view"><span unselectable="on" class="k-icon k-i-calendar" aria-controls="meeting_minutes_date_next_dateview"></span></span><span class="k-link k-link-time" aria-label="Open the time view"><span unselectable="on" class="k-icon k-i-clock" aria-controls="meeting_minutes_date_next_timeview"></span></span></span></span></span><script>
+	kendo.syncReady(function(){jQuery("#meeting_minutes_date_next").kendoDateTimePicker({"close":meeting_minutes_datepicker_close,"format":"M/d/yyyy h:mm tt","parseFormats":["MMddyyyy hhmmt","MMddyyyy hhmm t","MMddyyyy HHmm","MMddyyyy hh:mmt","MMddyyyy hh:mm t","MMddyyyy HH:mm","MMddyyyy hht","MMddyyyy hh t","MMddyyyy HH","MMddyyyyhhmmt","MMddyyyyhhmm t","MMddyyyyhh:mmt","MMddyyyyhh:mm t","MMddyyyyHH:mm","MMddyyyyhht","MMddyyyyhh t","MMddyy hhmmt","MMddyy hhmm t","MMddyy HHmm","MMddyy hh:mmt","MMddyy hh:mm t","MMddyy HH:mm","MMddyy hht","MMddyy hh t","MMddyy HH","MMddyyhhmmt","MMddyyhhmm t","MMddyyhh:mmt","MMddyyhh:mm t","MMddyyHH:mm","MMddyyhht","MMddyyhh t","M/dd/yyyy hhmmt","M/dd/yyyy hhmm t","M/dd/yyyy HHmm","M/dd/yyyy hh:mmt","M/dd/yyyy hh:mm t","M/dd/yyyy HH:mm","M/dd/yyyy hht","M/dd/yyyy hh t","M/dd/yyyy HH","M/dd/yyyyhhmmt","M/dd/yyyyhhmm t","M/dd/yyyyhh:mmt","M/dd/yyyyhh:mm t","M/dd/yyyyHH:mm","M/dd/yyyyhht","M/dd/yyyyhh t","MM/d/yyyy hhmmt","MM/d/yyyy hhmm t","MM/d/yyyy HHmm","MM/d/yyyy hh:mmt","MM/d/yyyy hh:mm t","MM/d/yyyy HH:mm","MM/d/yyyy hht","MM/d/yyyy hh t","MM/d/yyyy HH","MM/d/yyyyhhmmt","MM/d/yyyyhhmm t","MM/d/yyyyhh:mmt","MM/d/yyyyhh:mm t","MM/d/yyyyHH:mm","MM/d/yyyyhht","MM/d/yyyyhh t","M/d/yyyy hhmmt","M/d/yyyy hhmm t","M/d/yyyy HHmm","M/d/yyyy hh:mmt","M/d/yyyy hh:mm t","M/d/yyyy HH:mm","M/d/yyyy hht","M/d/yyyy hh t","M/d/yyyy HH","M/d/yyyyhhmmt","M/d/yyyyhhmm t","M/d/yyyyhh:mmt","M/d/yyyyhh:mm t","M/d/yyyyHH:mm","M/d/yyyyhht","M/d/yyyyhh t","MM/dd/yy hhmmt","MM/dd/yy hhmm t","MM/dd/yy HHmm","MM/dd/yy hh:mmt","MM/dd/yy hh:mm t","MM/dd/yy HH:mm","MM/dd/yy hht","MM/dd/yy hh t","MM/dd/yy HH","MM/dd/yyhhmmt","MM/dd/yyhhmm t","MM/dd/yyhh:mmt","MM/dd/yyhh:mm t","MM/dd/yyHH:mm","MM/dd/yyhht","MM/dd/yyhh t","M/dd/yy hhmmt","M/dd/yy hhmm t","M/dd/yy HHmm","M/dd/yy hh:mmt","M/dd/yy hh:mm t","M/dd/yy HH:mm","M/dd/yy hht","M/dd/yy hh t","M/dd/yy HH","M/dd/yyhhmmt","M/dd/yyhhmm t","M/dd/yyhh:mmt","M/dd/yyhh:mm t","M/dd/yyHH:mm","M/dd/yyhht","M/dd/yyhh t","MM/d/yy hhmmt","MM/d/yy hhmm t","MM/d/yy HHmm","MM/d/yy hh:mmt","MM/d/yy hh:mm t","MM/d/yy HH:mm","MM/d/yy hht","MM/d/yy hh t","MM/d/yy HH","MM/d/yyhhmmt","MM/d/yyhhmm t","MM/d/yyhh:mmt","MM/d/yyhh:mm t","MM/d/yyHH:mm","MM/d/yyhht","MM/d/yyhh t","M/d/yy hhmmt","M/d/yy hhmm t","M/d/yy HHmm","M/d/yy hh:mmt","M/d/yy hh:mm t","M/d/yy HH:mm","M/d/yy hht","M/d/yy hh t","M/d/yy HH","M/d/yyhhmmt","M/d/yyhhmm t","M/d/yyhh:mmt","M/d/yyhh:mm t","M/d/yyHH:mm","M/d/yyhht","M/d/yyhh t","M-dd-yyyy hhmmt","M-dd-yyyy hhmm t","M-dd-yyyy HHmm","M-dd-yyyy hh:mmt","M-dd-yyyy hh:mm t","M-dd-yyyy HH:mm","M-dd-yyyy hht","M-dd-yyyy hh t","M-dd-yyyy HH","M-dd-yyyyhhmmt","M-dd-yyyyhhmm t","M-dd-yyyyhh:mmt","M-dd-yyyyhh:mm t","M-dd-yyyyHH:mm","M-dd-yyyyhht","M-dd-yyyyhh t","MM-d-yyyy hhmmt","MM-d-yyyy hhmm t","MM-d-yyyy HHmm","MM-d-yyyy hh:mmt","MM-d-yyyy hh:mm t","MM-d-yyyy HH:mm","MM-d-yyyy hht","MM-d-yyyy hh t","MM-d-yyyy HH","MM-d-yyyyhhmmt","MM-d-yyyyhhmm t","MM-d-yyyyhh:mmt","MM-d-yyyyhh:mm t","MM-d-yyyyHH:mm","MM-d-yyyyhht","MM-d-yyyyhh t","M-d-yyyy hhmmt","M-d-yyyy hhmm t","M-d-yyyy HHmm","M-d-yyyy hh:mmt","M-d-yyyy hh:mm t","M-d-yyyy HH:mm","M-d-yyyy hht","M-d-yyyy hh t","M-d-yyyy HH","M-d-yyyyhhmmt","M-d-yyyyhhmm t","M-d-yyyyhh:mmt","M-d-yyyyhh:mm t","M-d-yyyyHH:mm","M-d-yyyyhht","M-d-yyyyhh t","MM-dd-yy hhmmt","MM-dd-yy hhmm t","MM-dd-yy HHmm","MM-dd-yy hh:mmt","MM-dd-yy hh:mm t","MM-dd-yy HH:mm","MM-dd-yy hht","MM-dd-yy hh t","MM-dd-yy HH","MM-dd-yyhhmmt","MM-dd-yyhhmm t","MM-dd-yyhh:mmt","MM-dd-yyhh:mm t","MM-dd-yyHH:mm","MM-dd-yyhht","MM-dd-yyhh t","M-dd-yy hhmmt","M-dd-yy hhmm t","M-dd-yy HHmm","M-dd-yy hh:mmt","M-dd-yy hh:mm t","M-dd-yy HH:mm","M-dd-yy hht","M-dd-yy hh t","M-dd-yy HH","M-dd-yyhhmmt","M-dd-yyhhmm t","M-dd-yyhh:mmt","M-dd-yyhh:mm t","M-dd-yyHH:mm","M-dd-yyhht","M-dd-yyhh t","MM-d-yy hhmmt","MM-d-yy hhmm t","MM-d-yy HHmm","MM-d-yy hh:mmt","MM-d-yy hh:mm t","MM-d-yy HH:mm","MM-d-yy hht","MM-d-yy hh t","MM-d-yy HH","MM-d-yyhhmmt","MM-d-yyhhmm t","MM-d-yyhh:mmt","MM-d-yyhh:mm t","MM-d-yyHH:mm","MM-d-yyhht","MM-d-yyhh t","M-d-yy hhmmt","M-d-yy hhmm t","M-d-yy HHmm","M-d-yy hh:mmt","M-d-yy hh:mm t","M-d-yy HH:mm","M-d-yy hht","M-d-yy hh t","M-d-yy HH","M-d-yyhhmmt","M-d-yyhhmm t","M-d-yyhh:mmt","M-d-yyhh:mm t","M-d-yyHH:mm","M-d-yyhht","M-d-yyhh t","MMddyyyy","MMddyy","M/dd/yyyy","MM/d/yyyy","M/d/yyyy","MM/dd/yy","M/dd/yy","MM/d/yy","M/d/yy","M-dd-yyyy","MM-d-yyyy","M-d-yyyy","MM-dd-yy","M-dd-yy","MM-d-yy","M-d-yy"],"min":new Date(1900,0,1,0,0,0,0),"max":new Date(2099,11,31,0,0,0,0),"interval":30});});
+</script>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-12 col-lg-6">
+                            <label class="k.label label-top-sm">Location</label>
+                            <div class="row">
+                                <div class="col-xs-12 col-fix-left">
+                                    <input class="k-textbox" id="meeting_minutes_location_next" name="meeting_minutes_location_next">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" title="Add new meeting item to agenda" id="meeting_minutes_add_to_agenda_button" onclick="meeting_minutes_add_template_item_row()"><i class="fa fa-plus fa-lg"></i></button>
+                <button type="button" class="btn btn-default" onclick="meeting_minutes_close_modal()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/x-kendo-template" id="meeting_minutes_history_toolbar">
+    <div>
+        <label class="k.label label-section">Historical Meetings</label>
+    </div>
+</script>
+
+<script type="text/x-kendo-template" id="meeting_minutes_participants_toolbar">
+    <div>
+        <label class="k.label label-section">Participants</label>
+        <div class="pull-right">
+            <button type="button" class="btn btn-success btn-space-sm k-grid-add" title="Add New Participant" id="meeting_minutes_participants_add"><i class="fa fa-plus fa-lg"></i></button>
+            <button type="button" class="btn btn-warning btn-space-sm" title="Cancel Changes" id="meeting_minutes_participants_cancel" onclick="meeting_minutes_grid_cancel('meeting_minutes_participants')"><i class="fa fa-minus fa-lg"></i></button>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-kendo-template" id="meeting_minutes_grid_toolbar">
+    <div>
+        <label class="k.label label-section" id="minutes_grid_label">Introductory Items</label>
+        <div class="pull-right">
+            <button type="button" class="btn btn-default btn-space" title="Send Email for Action" id="meeting_minutes_grid_corrective_action" onclick="meeting_minutes_add_corrective_action()" disabled>Assign Action</button>
+            <button type="button" class="btn btn-success btn-space-sm" title="Add New Minutes" id="meeting_minutes_grid_add" onclick="meeting_minutes_add_row()" disabled><i class="fa fa-plus fa-lg"></i></button>
+            <button type="button" class="btn btn-warning btn-space-sm" title="Cancel Changes" id="meeting_minutes_grid_cancel" onclick="meeting_minutes_grid_cancel('meeting_minutes_grid')"><i class="fa fa-minus fa-lg"></i></button>
+        </div>
+    </div>
+</script>
+
+
+    
+
+<div class="modal fade" id="modalGenericWarning" role="dialog" aria-labelledby="modalWarning" style="display:none">
+    <div id="genericwarningmodal_modaldialog_div" class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header alert alert-warning">
+                <h4 class="modal-title" id="modalGenericWarningTitle">Insert Title Here</h4>
+            </div>
+            <div class="modal-body">
+                <span id="modalGenericWarningMessage">Enter your warning message here</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="modalGenericWarningCancel" data-dismiss="modal" onclick="$(&#39;#modalGenericWarning&#39;).off(&#39;click&#39;, &#39;#modalGenericWarning&#39;)">Cancel</button>
+                <button type="button" class="btn btn-primary" id="modalGenericWarningConfirm" data-toggle="collapse" data-target="#collapseComment" aria-expanded="false" aria-controls="collapseComment">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalGenericError" tabindex="-1" role="dialog" aria-labelledby="modalError" style="display:none;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header alert alert-danger">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="modalGenericErrorTitle">Insert Title Here</h4>
+            </div>
+            <div class="modal-body">
+                <span id="modalGenericErrorBody">Enter your error message here</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="modalGenericErrorConfirm" data-toggle="collapse" data-target="#collapseComment" aria-expanded="false" aria-controls="collapseComment">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalCancelChanges" role="dialog" aria-labelledby="modalCancel" style="display:none">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header alert alert-warning">
+                <h4 class="modal-title" id="modalCancel">Cancel Changes Warning</h4>
+            </div>
+            <div class="modal-body">
+                <span>Are you sure you want to cancel your changes?</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="modalCancelChangesCancel" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" id="modalCancelChangesConfirm" data-toggle="collapse" data-target="#collapseComment" aria-expanded="false" aria-controls="collapseComment">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+    

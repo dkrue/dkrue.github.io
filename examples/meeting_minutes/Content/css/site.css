@@ -1,0 +1,419 @@
+
+
+.btn {
+    line-height: 1em;
+}
+
+.blockUI {
+    border: none;
+    padding: 15px;
+    background-color: #000;
+    opacity: .5;
+    color: #fff
+}
+
+/*#region Column*/
+
+ /* This decreases the default bootstrap gutters around all columns */ 
+.col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
+    position: relative;
+    min-height: 1px;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+/* This puts in a bottom space in between a row and something like a grid */
+.col-fix-bottom {
+    padding-bottom: 12px;
+}
+
+/* This puts in a bottom space in between a row or inputs and another row */
+.col-fix-bottom-sm {
+    padding-bottom: 0;
+}
+
+/* This fixes the -15px that gets applied default to the row class */
+.col-fix-clear-all {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* This fixes the -15px that gets applied default to the row class */
+.col-fix-header {
+    padding-top: 10px;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+/* This fixes the -15px that gets applied default to the row class */
+.col-fix-left {
+    padding-left: 1px;
+}
+
+/* This removes all left side space */
+.col-fix-left-clear {
+    padding-left: 0 !important;
+}
+
+/* This fixes the spacing for something going a standard distance from right */
+.col-fix-right {
+    padding-right: 8px;
+}
+
+/* This fixes the spacing for something going a standard distance from right */
+.col-fix-right-large {
+    padding-right: 15px;
+}
+
+/* This removes all right side space */
+.col-fix-right-clear {
+    padding-right: 0 !important;
+}
+
+/* This decreases the right pad, to clear extra space */
+.col-fix-right-sm {
+    padding-right: 1px;
+}
+
+/* This puts in a bottom space in between a row or inputs and another row */
+.col-fix-top {
+    padding-top: 12px;
+}
+
+/* This puts in a bottom space in between a row or inputs and another row */
+.col-fix-top-sm {
+    padding-top: 6px;
+}
+
+/* This puts in a bottom space in between a row or inputs and another row */
+.col-fix-top-xs {
+    padding-top: 5px;
+}
+
+/* This is the padding between two separate objects for spacing */
+.col-last {
+    padding-right: 6px;
+}
+
+/* This is the padding between two separate objects for spacing */
+.col-last-lg {
+    padding-right: 15px;
+}
+
+/*#endregion Column*/
+
+/*#region Label*/
+
+/* This is used where a group of action buttons exist, without a label */
+.label-action {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+/* This is used where the control doesn't have a label above it */
+.label-missing-sm {
+    margin-bottom: 0;
+    padding-top: 19px !important;
+}
+
+/* This is used for titles above sections, like grids */
+.label-section {
+    text-transform: capitalize !important;
+    font-family: sans-serif !important;
+    -ms-text-size-adjust: 100% !important;
+    -webkit-text-size-adjust: 100% !important;
+    font-size: 16px !important;
+    font-weight: normal !important;
+}
+
+/* This is used for titles above sections, like grids */
+.label-space {
+    padding-top: 7px;
+    font-size: 14px;
+}
+
+/* This is used for titles above sections, like grids */
+.label-space-lg {
+    padding-top: 20px;
+    font-size: 16px;
+}
+
+/* This is used for our standard label which goes above the field */
+.label-top {
+    margin-bottom: 0;
+    margin-top: 10px;
+}
+
+/* This is used where the control doesn't have a label above it */
+.label-right-space {
+    margin-right: 20px;
+}
+
+/* This is used for our standard label which goes above the field with a button in the label */
+.label-top-button {
+    padding: 2px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-right: 2px;
+}
+
+/*#endregion Label*/
+
+/*#region Modal*/
+
+body .modal-large {
+    width: 90%
+}
+
+body .modal-medium{
+    width: 60%
+}
+
+body .modal-largefixed {
+    width: 1000px
+}
+
+.modal-footer .btn+.btn {
+    margin-left: 0;
+    margin-bottom: 0;
+}
+
+.modal-lg {
+     width: 90%;
+}
+
+/*#endregion Modal*/
+
+/*#region Navbar*/
+
+/* Standard navbar which is used for the main application */
+.navbar {
+    min-height: 42px;
+    margin-bottom: 0;
+}
+
+/* Formatting tweaks for main navigation bar */
+.navbar-brand {
+    float: left;
+    padding-top: 12px;
+    padding-left: 15px;
+    font-size: 18px;
+    line-height: 18px;
+    height: 42px;
+}
+
+/* Formatting tweaks for main navigation bar */
+.navbar-header {
+    height: 42px;
+}
+
+/* Formatting tweaks for main navigation bar */
+.navbar-inverse {
+    color: #ffffff;
+    text-transform: uppercase !important;
+    font-size: 14px !important;
+    border: 0;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.navbar-inverse-highlight {
+    background-color: #5cb85c
+}
+
+.navbar-inverse .navbar-brand {
+    color: #ffffff;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: #ffffff;
+}
+
+.navbar-inverse .navbar-nav > li > a:hover {
+    color: yellow;
+}
+
+/* Navbar formatting for main buttons to keep them from moving */
+.navbar-nav > li > a {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+/* Navbar formatting for main buttons to keep them from moving */
+.navbar-nav > li > a:hover {
+    font-size: 14px;
+    line-height: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    color: yellow;
+}
+
+/* Navbar formatting for main buttons to keep them from moving */
+.navbar .nav > li > a {
+    font-size: 14px;
+    line-height: 20px;
+}
+
+/* Navbar formatting for main buttons to keep them from moving */
+.nav {
+    font-size: 12px;
+    line-height: 20px;
+}
+
+/* Navbar hamburger icon placement adjustments */
+.navbar-toggle {
+    margin-bottom: 2px;
+    margin-right: 4px;
+    margin-top: 2px;
+}
+
+/*#endregion Navbar*/
+
+/*#region Panel*/
+
+.panel-dirty {
+    margin-bottom: 8px;
+    border-width: 1px;
+}
+
+/* Decreases spacing around body of panel */
+.panel-body {
+    padding-bottom: 8px;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 4px;
+}
+
+/* Decreases spacing around heading */
+.panel-heading {
+    padding: 1px 1px 1px 4px;
+    border-bottom: 1px solid transparent;
+}
+
+/*#endregion Panel*/
+
+/*#region Row*/
+
+/* This fixes the negative space which is put in a row */
+.row {
+    margin-left: 0;
+
+    /* IE FIX FOR OC-3824: Set min row height due to box model differences between Kendo and Bootstrap */
+    min-height: 38px;
+}
+
+.row-panel {
+    min-height: 34px !important;
+}
+
+/*#endregion Row*/
+
+/*#region Section*/
+
+/* Increase spacing from default */
+.section-separation {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+/* Used to separate a split screen by outlining one of them */
+.section-outline {
+    outline: 1px solid #dddddd
+}
+
+/*#endregion Section*/
+
+/*#region Separator*/
+
+/* This goes anywhere a separator should divide 2 rows for visuals */
+.hr-separator {
+    border: 0;
+    padding: 0;
+    height: 1px;
+    margin-bottom: 0;
+    margin-top: 6px;
+    width: 100%;
+}
+
+/* This goes below headers where there are tabs */
+.hr-separator-bar {
+    border: 0;
+    padding: 0;
+    height: 1px;
+    margin-bottom: 4px;
+    margin-top: 3px;
+    width: 100%;
+}
+
+/* This goes below headers where there are tabs */
+.hr-separator-bar-only {
+    border: 0;
+    padding: 0;
+    height: 1px;
+    margin-bottom: 0;
+    margin-top: 0;
+    width: 100%;
+}
+
+/* This goes below headers where there are tabs */
+.hr-separator-bar-only-thick {
+    border: 0;
+    padding: 0;
+    height: 2px;
+    margin-bottom: 0;
+    margin-top: 0;
+    width: 100%;
+}
+
+/* This goes below headers where there are tabs */
+.hr-separator-header {
+    border: 0;
+    padding: 0;
+    height: 1px;
+    margin-bottom: 6px;
+    margin-top: 0;
+    width: 100%;
+}
+
+/* This goes below headers where there are tabs */
+.hr-separator-search {
+    border: 0;
+    padding: 0;
+    height: 1px;
+    margin-bottom: 6px;
+    margin-top: 6px;
+    width: 100%;
+}
+
+/* This goes below headers where there are tabs */
+.hr-separator-jumbo {
+    border: 0;
+    padding: 0;
+    height: 1px;
+    margin-bottom: 0;
+    margin-top: -30px;
+    width: 100%;
+}
+
+/*#endregion Separator*/
+
+.select-listbox {
+    width: 100%; 
+    background-color: #c7c7c7;
+    color: #000000;
+}
+
+/*#region Table*/
+
+table a:not(.btn), .table a:not(.btn) {
+    text-decoration: none;
+}
+
+/*#endregion Table*/
+
